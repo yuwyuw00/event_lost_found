@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Report a Lost Item</h2>
+<form method="POST">
+  <label for="name">Item Name:</label><br>
+  <input type="text" name="name" id="name" required><br><br>
+
+  <label for="description">Description:</label><br>
+  <textarea name="description" id="description" rows="4" required></textarea><br><br>
+
+  <button type="submit">Submit</button>
+</form>
+<a href="{{ url_for('item.view_items') }}">Back to Items</a>
+{% endblock %}

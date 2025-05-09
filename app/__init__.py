@@ -35,7 +35,16 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
     
+    # Register the dashboard blueprint
     from app.controllers.dashboard_controller import dashboard_bp
     app.register_blueprint(dashboard_bp)
+
+    # Register the event blueprint
+    from app.controllers.event_controller import event_bp
+    app.register_blueprint(event_bp)
+
+    # Register the item blueprint (if applicable)
+    from app.controllers.item_controller import item_bp
+    app.register_blueprint(item_bp)
 
     return app

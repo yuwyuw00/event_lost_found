@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Lost Items</h2>
+<ul>
+  {% for item in lost_items %}
+    <li><strong>{{ item.name }}</strong>: {{ item.description }} (Reported by User ID: {{ item.user_id }})</li>
+  {% else %}
+    <li>No lost items found.</li>
+  {% endfor %}
+</ul>
+
+<h2>Found Items</h2>
+<ul>
+  {% for item in found_items %}
+    <li><strong>{{ item.name }}</strong>: {{ item.description }} (Reported by User ID: {{ item.user_id }})</li>
+  {% else %}
+    <li>No found items reported.</li>
+  {% endfor %}
+</ul>
+
+<a href="{{ url_for('item.report_lost') }}">Report Lost Item</a> |
+<a href="{{ url_for('item.report_found') }}">Report Found Item</a>
+{% endblock %}
