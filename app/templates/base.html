@@ -3,21 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>CCI CCS Event Managemend & Lost-and-Found</title>
     <!-- Add your styles here -->
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('events.view_events') }}">View Events</a></li>
-            <li><a href="{{ url_for('item.view_items') }}">View Lost and Found Items</a></li>
-            <li><a href="{{ url_for('item.report_lost') }}">Report Lost Item</a></li>
-            <li><a href="{{ url_for('events.request_event') }}">Request Event</a></li>
-        </ul>
-    </nav>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to log out?')">Logout</a>
+    {% endif %}
 
-    <!-- Content Block -->
+
     <div class="container">
         {% block content %}
         {% endblock %}

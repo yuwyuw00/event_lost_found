@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import login_user, logout_user, login_required
 from app import db
 from app.models.user import User
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -12,60 +12,55 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-      # Get form inputs
-        username = request.form['username']
-        password = request.form['password']
-        password_confirm = request.form['password_confirm']
-        role = request.form['role']  # <-- Move this up
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        password_confirm = request.form.get('password_confirm', '')
+        role = request.form.get('role', '').strip()
 
-        # Password validation
+        # Validate user input
+        if not username or not password or not role:
+            flash("Please fill in all required fields.", "danger")
+            return redirect(url_for('auth.register'))
+
         if password != password_confirm:
             flash("Passwords don't match!", "danger")
             return redirect(url_for('auth.register'))
 
-        # Check if username exists
-        user = User.query.filter_by(username=username).first()
-        if user:
+        if User.query.filter_by(username=username).first():
             flash("Username already exists.", "danger")
             return redirect(url_for('auth.register'))
 
-        # Create a new user with hashed password and role
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(username=username, password=hashed_password, role=role)  # <-- Include role here
+        # Create a new user instance (password will be hashed in the model)
+        new_user = User(username=username, password=password, role=role)
 
-        # Role-based additional fields
+        # Handle role-specific fields
         if role == 'student':
-            new_user.school_id_number = request.form['school_id_number']
-            new_user.course = request.form['course']
-            new_user.year = request.form['year']
+            new_user.school_id_number = request.form.get('school_id_number', '').strip()
+            new_user.course = request.form.get('course', '').strip()
+            new_user.year = request.form.get('year', '').strip()
         elif role == 'faculty':
-            new_user.school_id_number = request.form['school_id_number']
-            new_user.department = request.form['department']
+            new_user.school_id_number = request.form.get('school_id_number', '').strip()
+            new_user.department = request.form.get('department', '').strip()
         elif role == 'others':
-            new_user.phone_number = request.form['phone_number']
-            legal_id_photo = request.files['legal_id_photo']
-            
+            new_user.phone_number = request.form.get('phone_number', '').strip()
+            legal_id_photo = request.files.get('legal_id_photo')
             if legal_id_photo:
-                # Ensure the directory exists
                 upload_folder = os.path.join('app', 'static', 'uploads', 'legal_ids')
-                if not os.path.exists(upload_folder):
-                    os.makedirs(upload_folder)  # Create the directory if it doesn't exist
-
-                # Save the legal ID photo with a secure filename
+                os.makedirs(upload_folder, exist_ok=True)
                 filename = secure_filename(legal_id_photo.filename)
                 legal_id_photo.save(os.path.join(upload_folder, filename))
-
-                # Store the filename in the user model
                 new_user.legal_id_photo = filename
 
-
-        # Save to database
-        db.session.add(new_user)
-        db.session.commit()
-
-        
-        flash("Registration successful! Please log in.", "success")
-        return redirect(url_for('auth.login'))
+        # Save the new user to the database
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash("Registration successful! Please log in.", "success")
+            return redirect(url_for('auth.login'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Registration failed: {str(e)}", "danger")
+            return redirect(url_for('auth.register'))
 
     return render_template('auth/register.html')
 
@@ -73,18 +68,26 @@ def register():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
 
-        # Find user by username
+        # Retrieve the user by username
         user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            flash("Logged in successfully!", "success")
-            return redirect(url_for('dashboard.dashboard'))
 
+        if user:
+            # Debugging: Show stored hash and entered password (remove this in production)
+            print(f"Stored hashed password: {user.password}")
 
-        flash("Invalid username or password.", "danger")
+            # Check password hash match
+            if check_password_hash(user.password, password):
+                login_user(user)
+                flash("Logged in successfully!", "success")
+                return redirect(url_for('dashboard.dashboard'))
+            else:
+                flash("Invalid username or password.", "danger")
+        else:
+            flash("User not found.", "danger")
+
         return redirect(url_for('auth.login'))
 
     return render_template('auth/login.html')
