@@ -52,6 +52,9 @@ def create_app():
     from app.controllers.item_controller import item_bp
     app.register_blueprint(item_bp)
 
+    from app.controllers.lost_found_controller import lost_found_bp
+    app.register_blueprint(lost_found_bp)
+
     # Error handling: 404 and 500
     @app.errorhandler(404)
     def page_not_found(error):

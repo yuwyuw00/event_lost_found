@@ -3,18 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCI CCS Event Managemend & Lost-and-Found</title>
-    <!-- Add your styles here -->
+    <title>Event Lost & Found</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+            <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+            <li><a href="{{ url_for('event.view_events') }}">Events</a></li>
+            <li><a href="{{ url_for('lost_found.view_items') }}">Lost Items</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Display User Info (if logged in) -->
     {% if current_user.is_authenticated %}
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to log out?')">Logout</a>
+        <div class="user-info">
+            <p>Welcome, {{ current_user.username }} ({{ current_user.role }})</p>
+        </div>
+    {% else %}
+        <div class="guest-info">
+            <p>Welcome, Guest! Please log in or register.</p>
+        </div>
     {% endif %}
 
-
-    <div class="container">
+    <!-- Main Content -->
+    <div class="content">
         {% block content %}
         {% endblock %}
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Event Lost & Found. All rights reserved.</p>
+    </footer>
 </body>
 </html>

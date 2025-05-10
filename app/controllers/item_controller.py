@@ -11,9 +11,9 @@ item_bp = Blueprint('item', __name__, url_prefix='/item')
 @item_bp.route('/view', methods=['GET'])
 @login_required
 def view_items():
-    lost_items = Item.query.filter_by(status='lost').all()
-    found_items = Item.query.filter_by(status='found').all()
-    return render_template('item/view_items.html', lost_items=lost_items, found_items=found_items)
+    lost_item = Item.query.filter_by(status='lost').all()
+    found_item = Item.query.filter_by(status='found').all()
+    return render_template('item/view_items.html', lost_item=lost_item, found_item=found_item)
 
 # Report a Lost Item
 @item_bp.route('/report_lost', methods=['GET', 'POST'])
