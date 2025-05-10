@@ -39,7 +39,7 @@ def create_event():
             flash(f"Failed to create event: {str(e)}", "danger")
             return redirect(url_for('event.create_event'))
 
-    return render_template('event/create_event.html')
+    return render_template('evens/create_event.html')
 
 
 # View All Events
@@ -47,4 +47,4 @@ def create_event():
 @login_required
 def view_events():
     events = Event.query.all()
-    return render_template('event/view_events.html', events=events)
+    return render_template('events/view_events.html', events=events)
