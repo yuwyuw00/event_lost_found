@@ -1,43 +1,32 @@
+<!-- templates/layout/base.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-gray-100">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Lost & Found</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% set title = 'Event Lost & Found' %}
+    {% include 'components/layout/head.html' %}
 </head>
-<body>
-    <!-- Navigation Bar -->
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-            <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-            <li><a href="{{ url_for('event.view_events') }}">Events</a></li>
-            <li><a href="{{ url_for('lost_found.view_items') }}">Lost Items</a></li>
-            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-        </ul>
-    </nav>
 
-    <!-- Display User Info (if logged in) -->
-    {% if current_user.is_authenticated %}
-        <div class="user-info">
-            <p>Welcome, {{ current_user.username }} ({{ current_user.role }})</p>
-        </div>
-    {% else %}
-        <div class="guest-info">
-            <p>Welcome, Guest! Please log in or register.</p>
-        </div>
-    {% endif %}
+<body class="h-full">
+    <div class="min-h-full">
+        <!-- Navigation Bar: Hide if not logged in -->
+        {% if current_user.is_authenticated %}
+            {% include 'components/layout/navigation.html' %}
+        {% endif %}
 
-    <!-- Main Content -->
-    <div class="content">
-        {% block content %}
-        {% endblock %}
+        <!-- Page Content -->
+        <main class="py-10">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white shadow sm:rounded-lg p-6">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Component -->
+        {% include 'components/layout/footer.html' %}
     </div>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Event Lost & Found. All rights reserved.</p>
-    </footer>
 </body>
+
 </html>

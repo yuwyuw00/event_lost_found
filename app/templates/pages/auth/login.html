@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+{% set title = 'Login' %}
+{% include 'components/layout/head.html' %}
+<body>
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+        <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-3 rounded text-white bg-red-500">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% include "pages/auth/_form.html" %}
+
+        <p class="text-center mt-4 text-sm text-gray-600">
+            Don't have an account? <a href="{{ url_for('auth.register') }}" class="text-blue-500 hover:underline">Register here</a>.
+        </p>
+    </div>
+</body>
+</html>

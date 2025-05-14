@@ -3,6 +3,7 @@
 from app import db
 from datetime import datetime
 
+
 class Item(db.Model):
     __tablename__ = 'items'  # The name of the table in the database
 
@@ -11,7 +12,10 @@ class Item(db.Model):
     description = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(20), nullable=False)  # 'lost' or 'found'
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow)
 
     # Foreign key to associate the item with a user (who reported it)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

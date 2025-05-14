@@ -1,0 +1,99 @@
+<!-- templates/auth/register.html -->
+<!DOCTYPE html>
+<html lang="en">
+{% set title = 'Register' %}
+{% include 'components/layout/head.html' %}
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
+        <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto">
+            <!-- Username -->
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 font-medium mb-2">Name</label>
+                <input type="text" id="username" name="username" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            <!-- Email -->
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+                <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-4">
+                <label for="password_confirm" class="block text-gray-700 font-medium mb-2">Confirm Password</label>
+                <input type="password" id="password_confirm" name="password_confirm" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Role -->
+            <div class="mb-4">
+                <label for="role" class="block text-gray-700 font-medium mb-2">Role</label>
+                <select name="role" id="role" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="student">Student</option>
+                    <option value="faculty">Faculty</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+
+            <!-- Additional Fields for Each Role -->
+            <div id="student_fields" class="hidden">
+                <div class="mb-4">
+                    <label for="school_id_number" class="block text-gray-700 font-medium mb-2">School ID Number</label>
+                    <input type="text" name="school_id_number" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="course" class="block text-gray-700 font-medium mb-2">Course</label>
+                    <input type="text" name="course" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="year" class="block text-gray-700 font-medium mb-2">Year</label>
+                    <input type="number" name="year" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <div id="faculty_fields" class="hidden">
+                <div class="mb-4">
+                    <label for="school_id_number" class="block text-gray-700 font-medium mb-2">School ID Number</label>
+                    <input type="text" name="school_id_number" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="department" class="block text-gray-700 font-medium mb-2">Department</label>
+                    <input type="text" name="department" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <div id="others_fields" class="hidden">
+                <div class="mb-4">
+                    <label for="phone_number" class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                    <input type="text" name="phone_number" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="legal_id_photo" class="block text-gray-700 font-medium mb-2">Legal ID Photo</label>
+                    <input type="file" name="legal_id_photo" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300">Register</button>
+        </form>
+        <p class="text-center mt-4">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-blue-500 hover:underline">Login here</a></p>
+    </div>
+
+    <script>
+        // Show/Hide Role-Specific Fields
+        document.getElementById('role').addEventListener('change', function() {
+            var role = this.value;
+            document.getElementById('student_fields').style.display = (role == 'student') ? 'block' : 'none';
+            document.getElementById('faculty_fields').style.display = (role == 'faculty') ? 'block' : 'none';
+            document.getElementById('others_fields').style.display = (role == 'others') ? 'block' : 'none';
+        });
+    </script>
+
+</body>
+</html>

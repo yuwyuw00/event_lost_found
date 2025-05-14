@@ -1,5 +1,6 @@
 from app import db
 
+
 class LostItem(db.Model):
     __tablename__ = 'lost_items'
 

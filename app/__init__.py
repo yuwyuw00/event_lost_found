@@ -1,8 +1,10 @@
-from flask import Flask, render_template  # Add render_template here
+from flask import Flask, render_template, redirect, url_for, session  # Add render_template, redirect, url_for, session here
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from dotenv import load_dotenv
+
+
 import logging
 
 # Initialize the extensions
@@ -10,12 +12,14 @@ db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 
+
 def create_app():
     load_dotenv()  # Load environment variables from .env file
 
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object('app.config')  # Load default config
-    app.config.from_pyfile('config.py', silent=True)  # Load from config.py, if exists
+    # Load from config.py, if exists
+    app.config.from_pyfile('config.py', silent=True)
 
     # Set up logging
     log_level = app.config.get("LOG_LEVEL", "INFO").upper()
@@ -28,12 +32,21 @@ def create_app():
     login_manager.init_app(app)
 
     # Setup login manager
-    login_manager.login_view = "auth.login"  # Ensure users are redirected to login if needed
+    # Ensure users are redirected to login if needed
+    login_manager.login_view = "auth.login"
     login_manager.login_message_category = "info"
+
+    @app.route('/')
+    def index():
+        print(session)
+        #if 'user_id' in session:
+        #    return redirect(url_for('dashboard'))
+        #return redirect(url_for('auth.login'))
 
     @login_manager.user_loader
     def load_user(user_id):
-        from app.models.user import User  # Import here to avoid circular import
+        # Import here to avoid circular import
+        from app.models.user import User
         return User.query.get(int(user_id))
 
     # Register the blueprints
@@ -55,10 +68,14 @@ def create_app():
     from app.controllers.lost_found_controller import lost_found_bp
     app.register_blueprint(lost_found_bp)
 
+    from app.controllers.admin_controller import admin_bp
+    app.register_blueprint(admin_bp)
+
     # Error handling: 404 and 500
     @app.errorhandler(404)
     def page_not_found(error):
         app.logger.error(f"404 error: {error}")
+        print("testtest")
         return render_template('errors/404.html'), 404
 
     @app.errorhandler(500)

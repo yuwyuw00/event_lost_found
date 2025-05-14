@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app import db
-from app.models.event import Event, EventRequest
-from app.models.user import User
+from app.models.event import Event
+
 from datetime import datetime
 
 event_bp = Blueprint('event', __name__, url_prefix='/events')
+
 
 # Create an Event
 @event_bp.route('/create', methods=['GET', 'POST'])
@@ -25,7 +26,7 @@ def create_event():
             title=title,
             description=description,
             location=location,
-            date=datetime.strptime(date, "%Y-%m-%d %H:%M"),
+            date=datetime.strptime(date, "%Y-%m-%dT%H:%M"),
             created_by=current_user.id
         )
 
@@ -39,7 +40,7 @@ def create_event():
             flash(f"Failed to create event: {str(e)}", "danger")
             return redirect(url_for('event.create_event'))
 
-    return render_template('evens/create_event.html')
+    return render_template('events/create_event.html')
 
 
 # View All Events

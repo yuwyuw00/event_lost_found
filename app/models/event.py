@@ -1,6 +1,6 @@
 from app import db
 from datetime import datetime
-from app.models.user import User
+
 
 class EventRequest(db.Model):
     __tablename__ = 'event_requests'
@@ -12,12 +12,17 @@ class EventRequest(db.Model):
     location = db.Column(db.String(255))
     event_date = db.Column(db.DateTime, nullable=False)
     request_date = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.Enum('pending', 'approved', 'denied', name='request_status'), default='pending')
+    status = db.Column(
+        db.Enum('pending', 'approved', 'denied', name='request_status'),
+        default='pending')
 
-    user = db.relationship('User', backref=db.backref('event_requests', lazy=True))
+    user = db.relationship(
+        'User',
+        backref=db.backref('event_requests', lazy=True))
 
     def __repr__(self):
         return f'<EventRequest {self.title}, {self.status}>'
+
 
 class Event(db.Model):
     __tablename__ = 'events'

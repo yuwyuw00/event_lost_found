@@ -7,6 +7,7 @@ import os
 
 lost_found_bp = Blueprint('lost_found', __name__, url_prefix='/items')
 
+
 @lost_found_bp.route('/report_lost', methods=['GET', 'POST'])
 @login_required
 def report_lost():
@@ -19,7 +20,9 @@ def report_lost():
         image_url = None
         if image:
             filename = secure_filename(image.filename)
-            image_path = os.path.join('app/static/uploads/item_images', filename)
+            image_path = os.path.join(
+                'app/static/uploads/item_images',
+                filename)
             image.save(image_path)
             image_url = f'uploads/item_images/{filename}'
 
@@ -38,6 +41,7 @@ def report_lost():
 
     return render_template('item/report_lost.html')
 
+
 @lost_found_bp.route('/report_found', methods=['GET', 'POST'])
 @login_required
 def report_found():
@@ -49,7 +53,8 @@ def report_found():
         image_url = None
         if image:
             filename = secure_filename(image.filename)
-            image_path = os.path.join('app/static/uploads/item_images', filename)
+            image_path = os.path.join('app/static/uploads/item_images',
+                                      filename)
             image.save(image_path)
             image_url = f'uploads/item_images/{filename}'
 
@@ -66,6 +71,7 @@ def report_found():
         return redirect(url_for('lost_found.view_items'))
 
     return render_template('item/report_found.html')
+
 
 @lost_found_bp.route('/view')
 @login_required

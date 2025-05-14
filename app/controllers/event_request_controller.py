@@ -4,7 +4,10 @@ from app import db
 from app.models.event import EventRequest, Event
 from datetime import datetime
 
-event_request_bp = Blueprint('event_request', __name__, url_prefix='/event-requests')
+event_request_bp = Blueprint(
+    'event_request',
+    __name__,
+    url_prefix='/event-requests')
 
 
 # Request an event (by any user)
@@ -32,7 +35,8 @@ def create_event_request():
         try:
             db.session.add(new_request)
             db.session.commit()
-            flash("Event request submitted! Awaiting admin approval.", "success")
+            error_message = "Event request submitted! Awaiting admin approval."
+            flash(error_message, "success")
             return redirect(url_for('dashboard.home'))
         except Exception as e:
             db.session.rollback()
@@ -49,7 +53,8 @@ def view_event_requests():
         flash("Unauthorized access.", "danger")
         return redirect(url_for('dashboard.home'))
 
-    requests = EventRequest.query.order_by(EventRequest.request_date.desc()).all()
+    requests = EventRequest.query.order_by(
+        EventRequest.request_date.desc()).all()
     return render_template('admin/event_requests.html', requests=requests)
 
 
